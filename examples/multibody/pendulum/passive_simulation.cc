@@ -61,7 +61,7 @@ int do_main() {
   const double max_time_step = reference_time_scale / 100;
 
   // Simulate about five periods of oscillation.
-  const double simulation_time = 5.0 * reference_time_scale;
+  const double simulation_time = 10.0 * reference_time_scale;
 
   // The target accuracy determines the size of the actual time steps taken
   // whenever a variable time step integrator is used.

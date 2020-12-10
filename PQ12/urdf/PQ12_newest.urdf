@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="PQ12_newest">
+  <link
+    name="Actuator">
+    <inertial>
+      <origin
+        xyz="0.0205597125133763 -0.00610895452325849 -1.42478129988577E-12"
+        rpy="0 0 0" />
+      <mass
+        value="0.00982821440686809" />
+      <inertia
+        ixx="4.59529984793493E-07"
+        ixy="4.3535046985363E-08"
+        ixz="-1.91972711099463E-16"
+        iyy="1.28917376818005E-06"
+        iyz="-6.50916353406145E-17"
+        izz="1.42930958176265E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="../meshes/Actuator.obj" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.796078431372549 0.823529411764706 0.937254901960784 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+	filename="/app/PQ12/meshes/Actuator.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="Shaft">
+    <inertial>
+      <origin
+        xyz="-0.0108460568783646 -6.93889390390723E-18 -6.07153216591882E-18"
+        rpy="0 0 0" />
+      <mass
+        value="0.000571128974922324" />
+      <inertia
+        ixx="2.35710729283067E-09"
+        ixy="-1.77272053830507E-24"
+        ixz="-1.97138881783892E-25"
+        iyy="2.77869116621344E-08"
+        iyz="3.32899302003267E-25"
+        izz="2.78217134252659E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+	filename="../meshes/Shaft.obj" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+	filename="../meshes/Shaft.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="act_joint"
+    type="prismatic">
+    <origin
+      xyz="0.059955 -0.0005 0"
+      rpy="0 0 0" />
+    <parent
+      link="Actuator" />
+    <child
+      link="Shaft" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-0.0020449"
+      upper="0.017955"
+      effort="0"
+      velocity="0" />
+  </joint>
+</robot>
