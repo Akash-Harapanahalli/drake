@@ -1,0 +1,42 @@
+load(
+    "@drake//tools/skylark:drake_cc.bzl",
+    "drake_cc_binary"
+)
+load("//tools/install:install_data.bzl", "install_data")
+
+package(
+    default_visibility = [":__subpackages__"],
+)
+
+drake_cc_binary(
+    name = "L2",
+    srcs = ["L2.cc"],
+    data = [":models"],
+    deps = [
+        "//common:find_resource",
+        "//geometry:geometry_visualization",
+        "//multibody/parsing",
+        "//systems/analysis:simulator",
+        "//systems/analysis:simulator_gflags",
+        "//systems/framework:diagram",
+        "//systems/rendering:multibody_position_to_geometry_pose",
+    ]
+)
+
+drake_cc_binary(
+    name = "L3",
+    srcs = ["L3.cc"],
+    data = [":models"],
+    deps = [
+        "//common:essential",
+        "//common:find_resource",
+        "//examples/manipulation_station",
+        "//geometry:geometry_visualization",
+        "//multibody/parsing",
+        "//systems/analysis:simulator",
+        "//systems/analysis:simulator_gflags",
+        "//systems/framework:diagram",
+        "//systems/rendering:multibody_position_to_geometry_pose",
+        "//systems/primitives"
+    ]
+)

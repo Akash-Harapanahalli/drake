@@ -7,29 +7,34 @@ namespace examples {
 namespace athena {
 
 double const Athena::limits[7][2] = {
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {}
-}
+    {-PI/2, PI/2},
+    {-PI/2, PI/2},
+    {-PI/4, PI/4},
+    {-PI/4, 2*PI/3},
+    {-PI/4, PI/4},
+    {-PI/4, PI/4},
+    {-PI/4, PI/2}
+};
 
 void Athena::initAutoGuess(const int &segments) const {
     autoguess_segments = segments;
-    int elements = std::pow(segments, 7);
+    autoguess_elements = std::pow(segments, 7);
 
-    autoguess_start = new Eigen::Matrix<double, 6, 1>[elements];
+    autoguess_x = new Eigen::Matrix<double, 6, 1>[autoguess_elements];
+    autoguess_q = new Eigen::Matrix<double, 7, 1>[autoguess_elements];
 
-    for(int a = 0; a < segments; ++a){
-    for(int b = 0; b < segments; ++b){
-    for(int c = 0; c < segments; ++c){
-    for(int d = 0; d < segments; ++d){
-    for(int e = 0; e < segments; ++e){
-    for(int f = 0; f < segments; ++f){
-    for(int g = 0; g < segments; ++g){
-        
+    int index = 0;
+
+    for(int a = 0; a < segments; ++a){ double a_edge = limits[0][0] + (a + 0.5) * (limits[0][1] - limits[0][0]) / segments;
+    for(int b = 0; b < segments; ++b){ double b_edge = limits[1][0] + (b + 0.5) * (limits[1][1] - limits[1][0]) / segments;
+    for(int c = 0; c < segments; ++c){ double c_edge = limits[2][0] + (c + 0.5) * (limits[2][1] - limits[2][0]) / segments;
+    for(int d = 0; d < segments; ++d){ double d_edge = limits[3][0] + (d + 0.5) * (limits[3][1] - limits[3][0]) / segments;
+    for(int e = 0; e < segments; ++e){ double e_edge = limits[4][0] + (e + 0.5) * (limits[4][1] - limits[4][0]) / segments;
+    for(int f = 0; f < segments; ++f){ double f_edge = limits[5][0] + (f + 0.5) * (limits[5][1] - limits[5][0]) / segments;
+    for(int g = 0; g < segments; ++g){ double g_edge = limits[6][0] + (g + 0.5) * (limits[6][1] - limits[6][0]) / segments;
+        autoguess_q[index] << a_edge, b_edge, c_edge, d_edge, e_edge, f_edge, g_edge;
+        autoguess_x[index] = LeftArmFK(autoguess_q[index]);
+        ++index;
     }
     }
     }
@@ -40,7 +45,18 @@ void Athena::initAutoGuess(const int &segments) const {
 }
 
 Eigen::Matrix<double, 7, 1> Athena::LeftArmIKAutoGuess(const Eigen::Matrix<double, 6, 1> &x_des) const {
-
+    int min_index = 0;
+    double min_distance = (x_des - autoguess_x[0]).norm();
+    int index = 1;
+    do {
+        double distance = (x_des - autoguess_x[index]).norm();
+        if (distance < min_distance) {
+            min_distance = distance;
+            min_index = index;
+        }
+    } while (++index < autoguess_elements);
+    std::cout << min_distance << std::endl;
+    return LeftArmIK(autoguess_q[min_index], x_des);
 }
 
 Eigen::Matrix<double, 7, 1> Athena::LeftArmIK(const Eigen::Matrix<double, 7, 1> &q_guess,

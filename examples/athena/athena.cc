@@ -30,29 +30,13 @@ void Athena::DoCalcDiscreteVariableUpdates(
     const std::vector<const drake::systems::DiscreteUpdateEvent<double>*>&,
     drake::systems::DiscreteValues<double>* updates) const
 {
-    static double theta = 0.0;
-    static double rho = 3*PI/2;
 //     static int dir = 1;
     t = context.get_time();
 
-    step = int(t / h);
+    // step = int(t / h);
     // Eigen::Matrix<double, 59, 1> state = // updates->get_mutable_vector().get_mutable_value(); //Eigen::Matrix<double,
     // 59, 1>::Random(); //updates->get_mutable_vector().get_mutable_value();
     Eigen::Matrix<double, 59, 1> state2 = Eigen::Matrix<double, 59, 1>::Constant(0.0);  // updates->get_mutable_vector().get_mutable_value();
-
-    double eps = 4 * PI * 0.001;
-    theta = theta + eps;
-    if (theta > 2*PI) {
-        theta = 0;
-        rho = rho + eps*10;
-    }
-    if (rho > 2*PI){
-        rho = 0;
-    }
-
-    x_c(2) = 100*cos(rho)*cos(theta) + _x_0(2);
-    x_c(1) = 100*cos(rho)*sin(theta) + _x_0(1);
-    x_c(0) = 100*sin(rho) + _x_0(0);
 
 //     double eps = 0.2;
 //     if (x_c(2) > (_x_0(2) + 100)) dir = -1;
@@ -113,12 +97,42 @@ void Athena::DoCalcDiscreteVariableUpdates(
         // std::cout << "FK(ik)\t" << LeftArmFK(ik).transpose() << std::endl;
     // }
 
-    ik = LeftArmIK(q_l, x_c);
-//     std::cout << x_c << std::endl;
-//     if(step == 1000) {
-//         std::cout << ik.transpose() << std::endl;
-//         std::cout << x_c.transpose() << std::endl;
-//     }
+    // static double theta = 0.0;
+    // static double rho = 3*PI/2;
+
+    // double eps = 4 * PI * 0.001;
+    // theta = theta + eps;
+    // if (theta > 2*PI) {
+    //     theta = 0;
+    //     rho = rho + eps*10;
+    // }
+    // if (rho > 2*PI){
+    //     rho = 0;
+    // }
+
+    // x_c(2) = 100*cos(rho)*cos(theta) + _x_0(2);
+    // x_c(1) = 100*cos(rho)*sin(theta) + _x_0(1);
+    // x_c(0) = 100*sin(rho) + _x_0(0);
+
+
+    // std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+    // ik = LeftArmIK(q_l, x_c);
+    // std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+    // ik = LeftArmIKAutoGuess(x_c);
+    // std::chrono::high_resolution_clock::time_point t3 = std::chrono::high_resolution_clock::now();
+    // std::chrono::duration<double> dur = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+    // std::cout << "IK (n AG): " << dur.count() << std::endl;
+    // dur = std::chrono::duration_cast<std::chrono::duration<double>>(t3 - t2);
+    // std::cout << "IK (y AG): " << dur.count() << std::endl;
+
+    double ppp = t * 78125 / 60;
+    int pppf = floor(ppp);
+    // double angle = Athena::limits[pppf][0] + (ppp - pppf)*(Athena::limits[pppf][1] - Athena::limits[pppf][0]);
+    // ik(pppf) = angle;
+    ik = autoguess_q[pppf];
+
+
+
     q_l = Eigen::Matrix<double, 7, 1>::Constant(0.0);
     q_l(2) = PI/4;
     q_l(3) = PI/2;

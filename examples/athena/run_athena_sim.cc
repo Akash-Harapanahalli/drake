@@ -93,6 +93,7 @@ void main() {
 
     auto ath = builder.AddSystem<drake::examples::athena::Athena>();
     ath->init(l_list, r_list);
+    ath->initAutoGuess(5);
 
     auto athena_to_pose =
         builder.AddSystem<MultibodyPositionToGeometryPose<double>>(plant);
@@ -106,7 +107,7 @@ void main() {
     auto context = diagram->CreateDefaultContext();
 
     auto simulator = std::make_unique<Simulator<double>>(*diagram, std::move(context));
-    simulator->set_target_realtime_rate(0.5);
+    simulator->set_target_realtime_rate(0.25);
     simulator->Initialize();
     simulator->AdvanceTo(FLAGS_simulation_time);
 }

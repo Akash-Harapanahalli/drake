@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <chrono>
 #include <Eigen/Core>
 #include <unsupported/Eigen/MatrixFunctions>
 
@@ -35,11 +36,7 @@ private:
     std::vector<Eigen::Matrix<double, 6, 1>> l_traj;
     std::vector<Eigen::Matrix<double, 6, 1>> r_traj;
 
-    mutable int autoguess_segments = 0;
-    mutable Eigen::Matrix<double, 6, 1> *autoguess_start = NULL;
-
     double h = 0.1;
-    mutable double t = 0;
     static double const limits[7][2];
     mutable Eigen::Matrix<double, 7, 1> q_l = Eigen::Matrix<double, 7, 1>::Constant(0.0);
     mutable Eigen::Matrix<double, 7, 1> q_r = Eigen::Matrix<double, 7, 1>::Constant(0.0);
@@ -51,12 +48,18 @@ public:
     void init(std::vector<Eigen::Matrix<double, 6, 1>> l_traj, 
               std::vector<Eigen::Matrix<double, 6, 1>> r_traj);
 
-    void initAutoGuess();
+    mutable int autoguess_segments = 0;
+    mutable int autoguess_elements = 0;
+    mutable Eigen::Matrix<double, 6, 1> *autoguess_x = NULL;
+    mutable Eigen::Matrix<double, 7, 1> *autoguess_q = NULL;
+
+    mutable double t = 0;
+    void initAutoGuess(const int &segments) const;
 
     Eigen::Matrix<double, 6, 1> LeftArmFK (const Eigen::Matrix<double, 7, 1> q) const;
     Eigen::Matrix<double, 6, 1> RightArmFK(const Eigen::Matrix<double, 7, 1> q) const;
     Eigen::Matrix<double, 7, 1> LeftArmIK(const Eigen::Matrix<double, 7, 1>& q_guess, const Eigen::Matrix<double, 6, 1>& x_des) const;
-    Eigen::Matrix<double, 7, 1> LeftArmIKAutoGuess(const Eigen::Matrix<double, 6, 1> &x_des);
+    Eigen::Matrix<double, 7, 1> LeftArmIKAutoGuess(const Eigen::Matrix<double, 6, 1> &x_des) const;
     Eigen::Matrix<double, 6, 7> LeftArmJacobian(const Eigen::Matrix<double, 7, 1>& q) const;
     
     void DoCalcDiscreteVariableUpdates(
